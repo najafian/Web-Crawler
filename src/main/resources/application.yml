@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    database-platform: com.webcrawler.configuration.SQLiteDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:Crawler-db.sqlite
+#    url: jdbc:sqlite:memory:myDb?cache=shared
+    username: sa
+    password: sa
+  banner:
+    location: banner.txt
+  profiles:
+    active: dev
+##spring.datasource.url =
