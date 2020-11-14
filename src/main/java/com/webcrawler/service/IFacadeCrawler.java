@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface IFacadeCrawler {
     boolean doCrawlOnLinkAndSave(String url) throws Exception;
-    Page<ProductDto> exhibitCrawlingProductResult(Pageable page);
+    Page<ProductDto> exhibitCrawlingProductResult(Pageable page,boolean pagerAction);
 }

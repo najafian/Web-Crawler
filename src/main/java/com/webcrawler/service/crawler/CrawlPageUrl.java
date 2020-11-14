@@ -2,11 +2,9 @@ package com.webcrawler.service.crawler;
 
 import com.webcrawler.service.action.CrawlProductAction;
 import com.webcrawler.service.util.JSoupUtil;
-import com.webcrawler.service.util.PageFetchException;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ForkJoinTask;
@@ -17,6 +15,11 @@ public class CrawlPageUrl {
     private static final String ABSOLUTE_HREF_ATTRIBUTE = "abs:href";
     private String mainUrl;
 
+    /**
+     *  Main method for Crawling the url to get products
+     * @param url
+     * @return
+     */
     public Collection<CrawlProductAction> doCrawlAction(String url) {
         Collection<CrawlProductAction> crawlProductActions = new ArrayList();
         mainUrl = url;

@@ -20,7 +20,14 @@ public class RepositoryProcess {
         this.productRepository = productRepository;
     }
 
+    /**
+     * Saving products is a purpose of this method
+     *
+     * @param crawlProductActions
+     * @return
+     */
     public boolean saveProducts(Collection<CrawlProductAction> crawlProductActions) {
+        productRepository.deleteAll();
         crawlProductActions.stream().forEach(productAction -> {
                     if (productAction.getProductModel() != null)
                         productRepository.save(productAction.getProductModel());
@@ -29,7 +36,17 @@ public class RepositoryProcess {
         return true;
     }
 
-    public Page<ProductDto> getPageableProductResults(Pageable page) {
+    public Long getNumberOfRows() {
+        return productRepository.count();
+    }
+
+    /**
+     * This method is getting result from Sql-lite database
+     *
+     * @param page
+     * @return
+     */
+    public Page<ProductDto> getPageableProductResults(Pageable page, boolean pagerAction) {
         Page<ProductModel> result = productRepository.findAll(page);
         Page<ProductDto> productDtoPage = result.map(m -> {
             ProductExtraDto extraDto = new ProductExtraDto();

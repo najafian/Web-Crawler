@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 
@@ -22,14 +23,25 @@ public class IFacadeCrawlerImpl implements IFacadeCrawler {
         this.repoProcess = repoProcess;
     }
 
+    /**
+     * @param url This is an Url parameter for crawling
+     * @return If all links and process is corrected then the result should be True
+     */
     @Override
     public boolean doCrawlOnLinkAndSave(String url) {
-        Collection<CrawlProductAction> crawlProductActions = crawlPageUrl.doCrawlAction(url);
-        return repoProcess.saveProducts(crawlProductActions);
+        if (repoProcess.getNumberOfRows() == 0) {
+            Collection<CrawlProductAction> crawlProductActions = crawlPageUrl.doCrawlAction(url);
+            repoProcess.saveProducts(crawlProductActions);
+        }
+        return true;
     }
 
+    /**
+     * @param page This parameter is Used for making pageable on results
+     * @return
+     */
     @Override
-    public Page<ProductDto> exhibitCrawlingProductResult(Pageable page) {
-        return repoProcess.getPageableProductResults(page);
+    public Page<ProductDto> exhibitCrawlingProductResult(Pageable page, boolean pagerAction) {
+        return repoProcess.getPageableProductResults(page, pagerAction);
     }
 }

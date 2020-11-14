@@ -8,14 +8,17 @@ import org.jsoup.select.Elements;
 
 import java.util.concurrent.RecursiveAction;
 
-
+/**
+ * This Class bring a concurrent processing for bringing products.
+ */
 public class CrawlProductAction extends RecursiveAction {
     private String mainUrl;
     private String productLink;
     private ProductModel productModel;
 
-    public CrawlProductAction() {
-
+    @Override
+    protected void compute() {
+        processLinkUrls();
     }
 
     private void processLinkUrls() {
@@ -50,21 +53,12 @@ public class CrawlProductAction extends RecursiveAction {
         return detailModel;
     }
 
-    @Override
-    protected void compute() {
-        processLinkUrls();
-    }
-
     public ProductModel getProductModel() {
         return productModel;
     }
 
     public void setProductLink(String productLink) {
         this.productLink = productLink;
-    }
-
-    public String getProductLink() {
-        return productLink;
     }
 
     public void setMainUrl(String mainUrl) {

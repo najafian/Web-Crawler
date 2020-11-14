@@ -179,17 +179,17 @@
                         <arguments>install</arguments>
                     </configuration>
                 </execution>
-                <execution>
-                    <id>webpack build test</id>
-                    <goals>
-                        <goal>npm</goal>
-                    </goals>
-                    <phase>test</phase>
-                    <configuration>
-                        <arguments>run webpack:test</arguments>
-                        <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
-                    </configuration>
-                </execution>
+<!--                <execution>-->
+<!--                    <id>webpack build test</id>-->
+<!--                    <goals>-->
+<!--                        <goal>npm</goal>-->
+<!--                    </goals>-->
+<!--                    <phase>test</phase>-->
+<!--                    <configuration>-->
+<!--                        <arguments>run webpack:test</arguments>-->
+<!--                        <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>-->
+<!--                    </configuration>-->
+<!--                </execution>-->
                 <execution>
                     <id>webpack build prod</id>
                     <goals>
@@ -206,6 +206,18 @@
     </plugins>
     </build>
 <profiles>
+    <profile>
+        <id>swagger</id>
+        <properties>
+            <profile.swagger>,swagger</profile.swagger>
+        </properties>
+    </profile>
+    <profile>
+        <id>tls</id>
+        <properties>
+            <profile.tls>,tls</profile.tls>
+        </properties>
+    </profile>
     <profile>
         <id>webpack</id>
         <activation>
@@ -270,6 +282,257 @@
         <!--                &lt;!&ndash; default Spring profiles &ndash;&gt;-->
         <!--                <spring.profiles.active>dev${profile.no-liquibase}</spring.profiles.active>-->
         <!--            </properties>-->
+    </profile>
+    <profile>
+        <id>dev</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-undertow</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+            </dependency>
+        </dependencies>
+        <!--            <properties>-->
+        <!--                &lt;!&ndash; default Spring profiles &ndash;&gt;-->
+        <!--                <spring.profiles.active>dev${profile.tls}${profile.no-liquibase}</spring.profiles.active>-->
+        <!--            </properties>-->
+    </profile>
+    <profile>
+        <id>prod</id>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-undertow</artifactId>
+            </dependency>
+        </dependencies>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <configuration>
+                        <filesets>
+                            <fileset>
+                                <directory>target/classes/static/</directory>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <mainClass>${start-class}</mainClass>
+                        <executable>true</executable>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>build-info</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.eirslett</groupId>
+                    <artifactId>frontend-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>install node and npm</id>
+                            <goals>
+                                <goal>install-node-and-npm</goal>
+                            </goals>
+                            <configuration>
+                                <nodeVersion>${node.version}</nodeVersion>
+                                <npmVersion>${npm.version}</npmVersion>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>npm install</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <configuration>
+                                <arguments>install</arguments>
+                            </configuration>
+                        </execution>
+<!--                        <execution>-->
+<!--                            <id>webpack build test</id>-->
+<!--                            <goals>-->
+<!--                                <goal>npm</goal>-->
+<!--                            </goals>-->
+<!--                            <phase>test</phase>-->
+<!--                            <configuration>-->
+<!--                                <arguments>run webpack:test</arguments>-->
+<!--                                <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>-->
+<!--                            </configuration>-->
+<!--                        </execution>-->
+                        <execution>
+                            <id>webpack build prod</id>
+                            <goals>
+                                <goal>npm</goal>
+                            </goals>
+                            <phase>generate-resources</phase>
+                            <configuration>
+                                <arguments>run webpack:prod</arguments>
+                                <npmInheritsProxyConfigFromMaven>false</npmInheritsProxyConfigFromMaven>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </build>
+        <!--            <properties>-->
+        <!--                &lt;!&ndash; default Spring profiles &ndash;&gt;-->
+        <!--                <spring.profiles.active>prod${profile.swagger}${profile.no-liquibase}</spring.profiles.active>-->
+        <!--            </properties>-->
+    </profile>
+    <profile>
+        <id>war</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven-war-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>war</goal>
+                            </goals>
+                            <phase>package</phase>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <warSourceIncludes>WEB-INF/**,META-INF/**</warSourceIncludes>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                        <warSourceDirectory>target/classes/static/</warSourceDirectory>
+                        <webResources>
+                            <resource>
+                                <directory>src/main/webapp</directory>
+                                <includes>
+                                    <include>WEB-INF/**</include>
+                                </includes>
+                            </resource>
+                        </webResources>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+    <profile>
+        <!--
+            Profile for tracing requests with Zipkin.
+        -->
+        <id>zipkin</id>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-zipkin</artifactId>
+                <version>3.0.0.M1</version>
+            </dependency>
+        </dependencies>
+    </profile>
+    <profile>
+        <!--
+            Profile for applying IDE-specific configuration.
+            At the moment it configures MapStruct and Hibernate JPA Metamodel Generator, which you need when working
+            with DTOs and entity filtering.
+        -->
+        <id>IDE</id>
+        <dependencies>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-jpamodelgen</artifactId>
+            </dependency>
+        </dependencies>
+    </profile>
+    <profile>
+        <!-- This is automatically activated when working in Eclipse -->
+        <id>eclipse</id>
+        <activation>
+            <property>
+                <name>m2e.version</name>
+            </property>
+        </activation>
+        <dependencies>
+            <!-- The following dependency is added due to issue #9175-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-undertow</artifactId>
+            </dependency>
+        </dependencies>
+        <build>
+            <pluginManagement>
+                <plugins>
+                    <!--
+                        This plugin's configuration is used to store Eclipse m2e settings only.
+                        It has no influence on the Maven build itself.
+                        Remove when the m2e plugin can correctly bind to Maven lifecycle
+                    -->
+                    <plugin>
+                        <groupId>org.eclipse.m2e</groupId>
+                        <artifactId>lifecycle-mapping</artifactId>
+                        <version>${lifecycle-mapping.version}</version>
+                        <configuration>
+                            <lifecycleMappingMetadata>
+                                <pluginExecutions>
+                                    <pluginExecution>
+                                        <pluginExecutionFilter>
+                                            <groupId>org.jacoco</groupId>
+                                            <artifactId>
+                                                jacoco-maven-plugin
+                                            </artifactId>
+                                            <versionRange>
+                                                ${jacoco-maven-plugin.version}
+                                            </versionRange>
+                                            <goals>
+                                                <goal>prepare-agent</goal>
+                                            </goals>
+                                        </pluginExecutionFilter>
+                                        <action>
+                                            <ignore/>
+                                        </action>
+                                    </pluginExecution>
+                                    <pluginExecution>
+                                        <pluginExecutionFilter>
+                                            <groupId>com.github.eirslett</groupId>
+                                            <artifactId>frontend-maven-plugin</artifactId>
+                                            <versionRange>${frontend-maven-plugin.version}</versionRange>
+                                            <goals>
+                                                <goal>install-node-and-npm</goal>
+                                                <goal>npm</goal>
+                                            </goals>
+                                        </pluginExecutionFilter>
+                                        <action>
+                                            <ignore/>
+                                        </action>
+                                    </pluginExecution>
+                                </pluginExecutions>
+                            </lifecycleMappingMetadata>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </pluginManagement>
+        </build>
     </profile>
 </profiles>
 </project>

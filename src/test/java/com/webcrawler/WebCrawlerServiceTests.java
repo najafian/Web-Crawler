@@ -29,7 +29,7 @@ class WebCrawlerServiceTests {
 
     @Test
     void showProductPagingResultFromSqlLiteDatabase() {
-        Page<ProductDto> productDtos = iFacadeCrawler.exhibitCrawlingProductResult(PageRequest.of(0, 20, Sort.unsorted()));
+        Page<ProductDto> productDtos = iFacadeCrawler.exhibitCrawlingProductResult(PageRequest.of(0, 20, Sort.unsorted()),false);
         assertTrue("Result of product list", productDtos.getSize() > 0);
     }
 
