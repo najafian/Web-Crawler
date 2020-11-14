@@ -1,9 +1,11 @@
+
 spring:
   jpa:
     database-platform: com.webcrawler.configuration.SQLiteDialect
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+    generate-ddl: true
   datasource:
     driver-class-name: org.sqlite.JDBC
     url: jdbc:sqlite:Crawler-db.sqlite

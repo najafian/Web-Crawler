@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {TranslatorContext, Storage, translate} from 'react-jhipster';
+import {TranslatorContext} from 'react-jhipster';
 
 export const ACTION_TYPES = {
     SET_LOCALE: 'locale/SET_LOCALE'
@@ -20,7 +20,7 @@ export default (state: LocaleState = initialState, action): LocaleState => {
                 TranslatorContext.setLocale(currentLocale);
             }
             return {
-                isRtl: translate('style.isRtl') === 'true',
+                isRtl: true,
                 currentLocale
             };
         default:

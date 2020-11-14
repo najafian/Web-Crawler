@@ -65,9 +65,6 @@ class SQLiteDialect : Dialect() {
         return true
     }
 
-    val createTemporaryTableString: String
-        get() = "create temporary table if not exists"
-
     override fun supportsCurrentTimestampSelection(): Boolean {
         return true
     }
