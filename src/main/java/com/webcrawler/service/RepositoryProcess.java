@@ -5,12 +5,13 @@ import com.webcrawler.model.ProductExtraDto;
 import com.webcrawler.model.ProductExtraModel;
 import com.webcrawler.model.ProductModel;
 import com.webcrawler.repository.ProductRepository;
-import com.webcrawler.service.action.CrawlProductAction;
+import com.webcrawler.service.action.CrawlProductLinkAction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class RepositoryProcess {
@@ -23,21 +24,13 @@ public class RepositoryProcess {
     /**
      * Saving products is a purpose of this method
      *
-     * @param crawlProductActions
+     * @param crawlProductLinkActions
      * @return
      */
-    public boolean saveProducts(Collection<CrawlProductAction> crawlProductActions) {
-        productRepository.deleteAll();
-        crawlProductActions.stream().forEach(productAction -> {
-                    if (productAction.getProductModel() != null)
-                        productRepository.save(productAction.getProductModel());
-                }
-        );
+    public boolean saveProductsIfNotExist(List<ProductModel> crawlProductLinkActions) {
+        if (productRepository.count() == 0)
+            productRepository.saveAll(crawlProductLinkActions);
         return true;
-    }
-
-    public Long getNumberOfRows() {
-        return productRepository.count();
     }
 
     /**
@@ -52,7 +45,7 @@ public class RepositoryProcess {
             ProductExtraDto extraDto = new ProductExtraDto();
             ProductExtraModel extraModel = m.getProductExtraModel();
             if (extraModel != null) {
-                extraDto.copy(
+                extraDto = extraDto.copy(
                         extraModel.getActivity(),
                         extraModel.getStyle(),
                         extraModel.getMaterial(),

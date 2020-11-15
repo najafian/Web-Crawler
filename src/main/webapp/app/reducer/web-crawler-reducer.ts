@@ -46,6 +46,7 @@ export const crawlExpectedUrl: IGetResultValues<any> = paramValue => ({
     payload: axios.get('api/crawling?url=' + paramValue)
 });
 
+
 export const exhibitProductResults: IGetResultValues<{ page: any; size; pagerAction }> = paramValue => ({
     type: ACTION_TYPES.SHOW_CRAWLER_PRODUCTS,
     payload: axios.get(`api/exhibitProducts?page=${paramValue.page}&size=${paramValue.size}&pagerAction=${paramValue.pagerAction}`)

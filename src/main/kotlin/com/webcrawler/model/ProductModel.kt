@@ -24,7 +24,7 @@ class ProductModel : Serializable {
     var detail: String? = null
 
 
-    @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.REMOVE])
+    @OneToOne(cascade = [CascadeType.PERSIST, CascadeType.REMOVE],fetch = FetchType.EAGER)
     @JoinColumn(name = "extra_id", referencedColumnName = "extra_id")
     var productExtraModel: ProductExtraModel? = null
 
