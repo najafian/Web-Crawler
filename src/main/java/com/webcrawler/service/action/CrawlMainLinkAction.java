@@ -3,6 +3,8 @@ package com.webcrawler.service.action;
 import com.webcrawler.model.ProductModel;
 import com.webcrawler.service.util.JSoupUtil;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.util.*;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.synchronizedList;
 
 public class CrawlMainLinkAction extends RecursiveAction {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private static final String LINK_ELEMENT_SELECTOR = "a[href]";
     private String mainUrl;
     Collection<CrawlCategoryLinkAction> crawlCategoryLinkActions;
@@ -29,9 +32,8 @@ public class CrawlMainLinkAction extends RecursiveAction {
     }
 
     public void doCrawlAction() {
-        Instant startTime = Instant.now();
+        long startTime = System.nanoTime();
         Elements linkElements = JSoupUtil.getElementFromUrl(mainUrl, LINK_ELEMENT_SELECTOR);
-
         if (linkElements != null && linkElements.size() > 0) {
             Set<String> urls = JSoupUtil.extractHtmlLink(linkElements);
             for (String link : urls) {
@@ -39,6 +41,13 @@ public class CrawlMainLinkAction extends RecursiveAction {
             }
             ForkJoinTask.invokeAll(crawlCategoryLinkActions);
         }
+        long endTime = System.nanoTime();
+
+        // get difference of two nanoTime values
+        long timeElapsed = endTime - startTime;
+
+        log.info("Execution time in milliseconds : " +
+                timeElapsed / 1000000);
     }
 
     public Optional<List<ProductModel>> getProductList() {
