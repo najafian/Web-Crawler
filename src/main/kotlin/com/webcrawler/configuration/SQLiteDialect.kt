@@ -57,8 +57,15 @@ class SQLiteDialect : Dialect() {
         return true
     }
 
-    override fun getLimitString(query: String, hasOffset: Boolean): String {
-        return StringBuffer(query.length + 20).append(query).append(if (hasOffset) " limit ? offset ?" else " limit ?").toString()
+//    override fun getLimitString(query: String, hasOffset: Boolean): String {
+//        return StringBuffer(query.length + 20).append(query).append(if (hasOffset) " limit ? offset ?" else " limit ?").toString()
+//    }
+    override fun getLimitString(query: String, hasOffset: Boolean): String? {
+        return StringBuffer(query.length + 120).append(query).append(if (hasOffset) " limit ?, ?" else " limit ?").toString()
+    }
+
+    override fun bindLimitParametersInReverseOrder(): Boolean {
+        return true
     }
 
     fun supportsTemporaryTables(): Boolean {

@@ -100,7 +100,7 @@ export class CustomGrid extends React.Component<IProps> implements IWidgetCommon
     }
 
     setEmptyPager() {
-        this.setPagerDataSource({pageIndex: undefined, pageSize: 50, total: 0, pageSizeItems: [20, 50, 100, 200]});
+        this.setPagerDataSource({pageIndex: undefined, pageSize: 100, total: 0, pageSizeItems: [100, 200]});
     }
 
     setPagerDataSource(pagerInfo: { pageIndex: number; pageSize: number; total: number; pageSizeItems: number[] }) {

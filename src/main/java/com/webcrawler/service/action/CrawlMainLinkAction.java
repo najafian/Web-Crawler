@@ -16,6 +16,7 @@ public class CrawlMainLinkAction extends RecursiveAction {
     private static final String LINK_ELEMENT_SELECTOR = "a[href]";
     private String mainUrl;
     Collection<CrawlCategoryLinkAction> crawlCategoryLinkActions;
+    Set<String> uniqueLiUrl=Collections.synchronizedSet(new HashSet());
 
     public CrawlMainLinkAction(String mainUrl) {
         this.mainUrl = mainUrl;
@@ -29,13 +30,12 @@ public class CrawlMainLinkAction extends RecursiveAction {
 
     public void doCrawlAction() {
         Instant startTime = Instant.now();
-
         Elements linkElements = JSoupUtil.getElementFromUrl(mainUrl, LINK_ELEMENT_SELECTOR);
 
         if (linkElements != null && linkElements.size() > 0) {
             Set<String> urls = JSoupUtil.extractHtmlLink(linkElements);
             for (String link : urls) {
-                crawlCategoryLinkActions.add(new CrawlCategoryLinkAction(link, mainUrl));
+                crawlCategoryLinkActions.add(new CrawlCategoryLinkAction(link, mainUrl,uniqueLiUrl));
             }
             ForkJoinTask.invokeAll(crawlCategoryLinkActions);
         }

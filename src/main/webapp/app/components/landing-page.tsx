@@ -39,7 +39,7 @@ class LandingPage extends React.Component<IProps> {
             }
         );
         this.iButtonShowElement.getWidget().OnClick(() => {
-                this.props.exhibitProductResults({page: 0, size: 20, pagerAction: false});
+                this.props.exhibitProductResults({page: 0, size: 100, pagerAction: false});
                 this.loadingBar.showLoading();
                 this.toast.show({content: 'Retrieving  is started!', showCloseButton: true});
             }
@@ -49,17 +49,17 @@ class LandingPage extends React.Component<IProps> {
         this.iTextCrawlElement.setValue('https://magento-test.finology.com.my/breathe-easy-tank.html')
         this.gridWidget.widget.setEmptyPager();
         this.gridWidget.widget.setGridColumn([
-            {headerText: 'rowNumber', field: 'rowNum', maxWidth: 70},
-            {headerText: 'productName', field: 'productName'},
-            {headerText: 'productPrice', field: 'productPrice', minWidth: 170},
+            {headerText: 'rowNumber', field: 'rowNum', width: 80},
+            {headerText: 'productName', field: 'productName',width:300},
+            {headerText: 'productPrice', field: 'productPrice', width: 90},
             {headerText: 'productDetail', field: 'productDetail', minWidth: 130},
-            {headerText: 'activity', field: 'activity'},
-            {headerText: 'style', field: 'style'},
-            {headerText: 'material', field: 'material'},
-            {headerText: 'pattern', field: 'pattern'},
-            {headerText: 'climate', field: 'climate'},
-            {headerText: 'gender', field: 'gender'},
-            {headerText: 'category', field: 'category'}
+            {headerText: 'activity', field: 'activity', width: 90},
+            {headerText: 'style', field: 'style', minWidth: 90},
+            {headerText: 'material', field: 'material', minWidth: 90},
+            {headerText: 'pattern', field: 'pattern', width: 90},
+            {headerText: 'climate', field: 'climate', width: 90},
+            {headerText: 'gender', field: 'gender', width: 90},
+            {headerText: 'category', field: 'category', width: 90}
         ]);
         this.gridWidget.pagerCallBack = props => this.props.exhibitProductResults({
             size: props.pageSize,
@@ -68,9 +68,9 @@ class LandingPage extends React.Component<IProps> {
         });
         this.gridWidget.widget.gridWidget.setWidgetDirection(false);
         this.gridWidget.widget.gridWidget.setHeight('330px');
-        this.gridWidget.widget.setPagerPageIndex(0);
-        this.gridWidget.widget.setPagerPageSize(10);
-        this.gridWidget.widget.setPagerTotalRecord(10);
+        // this.gridWidget.widget.setPagerPageIndex(0);
+        // this.gridWidget.widget.setPagerPageSize(100);
+        // this.gridWidget.widget.setPagerTotalRecord(10);
         this.gridWidget.widget.setGridDataSource([]);
 
     }
@@ -86,11 +86,13 @@ class LandingPage extends React.Component<IProps> {
         const showProductReducer = this.props.webCrawlerReducer.showProductReducer;
         if (prevProps.webCrawlerReducer.showProductReducer !== showProductReducer) {
             const pageable = showProductReducer.Pageable;
-            const pageSize = pageable.pageSize;
+            const pageSize = pageable.size;
             const pageNumber = showProductReducer.pageIndex;
             let rowNum = pageSize * pageNumber + 1;
             const dataItems = pageable.content.map(m => ({
-                ...m,
+                productName:m.productName,
+                productPrice:m.productPrice,
+                productDetail:m.productDetail,
                 rowNum: rowNum++,
                 activity:m.extra.activity,
                 category:m.extra.category,
@@ -100,14 +102,13 @@ class LandingPage extends React.Component<IProps> {
                 pattern:m.extra.pattern,
                 style:m.extra.style
             }));
-            if (showProductReducer.pagerAction) {
+            if (!showProductReducer.pagerAction) {
                 this.gridWidget.widget.setPagerPageIndex(pageNumber);
                 this.gridWidget.widget.setPagerPageSize(pageSize);
                 this.gridWidget.widget.setPagerTotalRecord(pageable.totalElements);
             }
             this.gridWidget.widget.setGridDataSource(dataItems);
             this.loadingBar.hideLoading();
-            this.toast.show({content: 'Retrieving  is finished!', showCloseButton: true});
             this.iButtonShowElement.setEnable(false)
         }
     }

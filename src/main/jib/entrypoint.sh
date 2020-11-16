@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo "The application will start in 5s..." && sleep 5
-exec java ${JAVA_OPTS} -noverify -XX:+AlwaysPreTouch -Djava.security.egd=file:/dev/./urandom -cp /app/resources/:/app/classes/:/app/libs/* "com.immoscout24.challenge.ChallengeApplication"  "$@"
+exec java ${JAVA_OPTS} -noverify -XX:+AlwaysPreTouch -Djava.security.egd=file:/dev/./urandom -cp /app/resources/:/app/classes/:/app/libs/* "com.webcrawler.DemoApplication"  "$@"
